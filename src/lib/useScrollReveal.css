@@ -1,0 +1,3 @@
+/* Layout safety: before GSAP has set inline transforms, keep [data-reveal]
+   content fully visible so content is never hidden if JS/GSAP fails. GSAP's
+   fromTo() sets opacity:0 -> 1; this rule is only a no-JS fallback. */
