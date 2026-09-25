@@ -1,0 +1,202 @@
+.footer {
+  background-color: var(--bg);
+}
+
+/* ------------------------------------------------------------
+   MASTHEAD — eyebrow / massive wordmark / tagline
+   ------------------------------------------------------------ */
+.footer__masthead {
+  border-bottom: var(--border-thin);
+  padding-top: clamp(4.5rem, 9vw, 9rem);
+  padding-bottom: var(--space-12);
+}
+
+.footer__eyebrow {
+  display: block;
+  margin-bottom: var(--space-8);
+}
+
+.footer__wordmark {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: clamp(3.25rem, 16.5vw, 20rem);
+  line-height: 0.95;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+  white-space: nowrap;
+}
+
+.footer__tagline {
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  color: var(--text-secondary);
+  margin-top: var(--space-6);
+}
+
+/* ------------------------------------------------------------
+   INFO GRID
+   ------------------------------------------------------------ */
+.footer__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(2.5rem, 5vw, 4rem);
+  padding-block: clamp(3rem, 6vw, 5rem);
+}
+
+.footer__group-title {
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  margin-bottom: var(--space-6);
+}
+
+.footer__links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.footer__links--inline {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--space-4) clamp(1.25rem, 3vw, 2rem);
+}
+
+.footer__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.footer__link:hover {
+  color: var(--text-primary);
+}
+
+.footer__link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.footer__link-arrow {
+  flex-shrink: 0;
+  width: 11px;
+  height: 11px;
+  color: var(--text-muted);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.footer__link:hover .footer__link-arrow {
+  color: var(--accent);
+}
+
+.footer__text {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.footer__text + .footer__text {
+  margin-top: var(--space-4);
+  color: var(--text-muted);
+}
+
+/* ------------------------------------------------------------
+   BOTTOM META BAR
+   ------------------------------------------------------------ */
+.footer__bottom-bar {
+  border-top: var(--border-thin);
+}
+
+.footer__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding-block: clamp(1.25rem, 3vw, 2rem);
+  flex-wrap: wrap;
+}
+
+.footer__copyright {
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+/* ------------------------------------------------------------
+   TABLET (768px – 991px)
+   ------------------------------------------------------------ */
+@media (min-width: 768px) and (max-width: 991px) {
+  .footer__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .footer__group:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ------------------------------------------------------------
+   MOBILE (<= 767px)
+   ------------------------------------------------------------ */
+@media (max-width: 767px) {
+  .footer__masthead {
+    padding-top: clamp(4rem, 14vw, 6rem);
+    padding-bottom: var(--space-8);
+  }
+
+  .footer__tagline {
+    letter-spacing: 0.24em;
+  }
+
+  .footer__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(1.5rem, 6vw, 2.5rem) clamp(2rem, 8vw, 3rem);
+    padding-block: clamp(2.5rem, 8vw, 4rem);
+  }
+
+  .footer__group:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .footer__group-title {
+    margin-bottom: var(--space-4);
+  }
+
+  .footer__bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding-block: var(--space-6);
+  }
+}
+
+/* ------------------------------------------------------------
+   REDUCED MOTION
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .footer__link,
+  .footer__link-arrow {
+    transition: none;
+  }
+}
