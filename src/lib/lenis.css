@@ -1,0 +1,21 @@
+/* Lenis smooth scroll — required compatibility rules only. No visual impact. */
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+/* Neutralize the global `html { scroll-behavior: smooth }` while Lenis is
+   active so it does not fight Lenis's own smoothing. Native smooth scrolling
+   still applies when Lenis is not running (reduced motion). */
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
