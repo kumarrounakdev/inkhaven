@@ -1,0 +1,244 @@
+/* ============================================================
+   NAVBAR — INKHAVEN
+   Floating macOS-inspired dock (desktop) + compact bottom nav (mobile)
+   Refined, cold, editorial. No glassmorphism excess.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   DESKTOP DOCK
+   ------------------------------------------------------------ */
+.dock {
+  position: fixed;
+  left: 50%;
+  bottom: clamp(16px, 3vw, 28px);
+  transform: translateX(-50%);
+  z-index: var(--z-header);
+}
+
+.dock__inner {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.4vw, 20px);
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background-color: rgba(16, 19, 24, 0.82);
+  backdrop-filter: blur(14px) saturate(1.05);
+  -webkit-backdrop-filter: blur(14px) saturate(1.05);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  transform-origin: bottom center;
+}
+
+.dock__brand {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+  white-space: nowrap;
+  padding-inline: 4px;
+}
+
+.dock__divider {
+  width: 1px;
+  height: 18px;
+  background-color: var(--border);
+  flex: none;
+}
+
+.dock__list {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dock__link,
+.dock__cta {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  color: var(--text-secondary);
+  padding: 10px 12px;
+  border-radius: 10px;
+  white-space: nowrap;
+  display: inline-block;
+  transform: scale(var(--s, 1));
+  transform-origin: center 100%;
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+  will-change: transform;
+}
+
+.dock__link:hover {
+  color: var(--text-primary);
+  background-color: rgba(242, 244, 247, 0.06);
+}
+
+.dock__link.is-active {
+  color: var(--text-primary);
+}
+
+.dock__link.is-active::after {
+  content: '';
+  display: block;
+  width: 4px;
+  height: 4px;
+  margin: 8px auto 0;
+  border-radius: 50%;
+  background-color: var(--accent);
+}
+
+.dock__cta {
+  color: var(--text-primary);
+  background-color: var(--surface-light);
+  border: 1px solid var(--border);
+}
+
+.dock__cta:hover {
+  color: var(--accent-light);
+  background-color: var(--surface-light);
+  border-color: rgba(143, 168, 192, 0.45);
+}
+
+.dock__link {
+  position: relative;
+}
+
+/* ------------------------------------------------------------
+   MOBILE BOTTOM DOCK (<= 767px)
+   ------------------------------------------------------------ */
+.mob {
+  position: fixed;
+  left: 50%;
+  bottom: calc(35px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: var(--z-header);
+  max-width: calc(100% - 16px);
+  display: none;
+}
+
+.mob__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 6px 16px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background-color: rgba(16, 19, 24, 0.88);
+  backdrop-filter: blur(14px) saturate(1.05);
+  -webkit-backdrop-filter: blur(14px) saturate(1.05);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+.mob__link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 6px clamp(4px, 1.5vw, 10px);
+  border-radius: 10px;
+  color: var(--text-muted);
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+}
+
+.mob__link:active {
+  color: var(--text-primary);
+  background-color: rgba(242, 244, 247, 0.08);
+}
+
+.mob__link.is-active {
+  color: var(--accent);
+}
+
+.mob__icon {
+  width: 20px;
+  height: 20px;
+  flex: none;
+}
+
+.mob__label {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+/* ------------------------------------------------------------
+   RESPONSIVE BREAKPOINT SWITCH (768px)
+   ------------------------------------------------------------ */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .dock__inner {
+    gap: 8px;
+    padding: 7px 10px;
+  }
+
+  .dock__link,
+  .dock__cta {
+    padding: 9px 9px;
+    letter-spacing: 0.08em;
+  }
+
+  .dock__divider {
+    height: 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  .dock {
+    display: none !important;
+  }
+
+  .mob {
+    display: block;
+  }
+}
+
+@media (hover: none) and (max-width: 767px) {
+  .dock {
+    display: none !important;
+  }
+
+  .mob {
+    display: block;
+  }
+}
+
+/* ------------------------------------------------------------
+   REDUCED MOTION
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .dock__link,
+  .dock__cta {
+    transform: scale(1) !important;
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ------------------------------------------------------------
+   FOCUS STATES (ACCESSIBILITY)
+   ------------------------------------------------------------ */
+.dock__link:focus-visible,
+.dock__cta:focus-visible,
+.dock__brand:focus-visible,
+.mob__link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
