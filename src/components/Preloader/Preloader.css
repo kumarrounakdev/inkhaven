@@ -1,0 +1,85 @@
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.preloader__content {
+  display: grid;
+  justify-items: center;
+  gap: clamp(24px, 5vh, 48px);
+  width: 100%;
+  max-width: min(560px, 86vw);
+  text-align: center;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.preloader__brand {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: clamp(2.25rem, 7vw, 4.5rem);
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-indent: 0.16em;
+  color: var(--text-primary);
+  will-change: transform, opacity;
+}
+
+.preloader__pct {
+  font-family: var(--font-body);
+  font-size: clamp(0.75rem, 1.4vw, 0.9rem);
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.preloader__bar {
+  display: block;
+  width: min(220px, 52vw);
+  height: 2px;
+  background: var(--border);
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.preloader__bar-fill {
+  position: relative;
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform-origin: left center;
+  transform: scaleX(0);
+  background: var(--accent);
+  will-change: transform;
+}
+
+/* Moving shine across the fill as it grows, for a livelier loading bar. */
+.preloader__bar-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: preloader-shine 1.1s ease-in-out infinite;
+}
+
+@keyframes preloader-shine {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
