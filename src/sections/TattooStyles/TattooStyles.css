@@ -1,0 +1,114 @@
+/* ============================================================
+   TATTOO STYLES SECTION
+   Editorial heading + stacked horizontal cards
+   ============================================================ */
+
+/* ------------------------------------------------------------
+
+   HEADER
+   ------------------------------------------------------------ */
+.styles__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  margin-bottom: var(--space-16);
+}
+
+.styles__meta {
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+}
+
+.styles__heading {
+  font-family: var(--font-heading);
+  font-size: clamp(3rem, 7vw, 7rem);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.styles__heading .styles__line-mask:nth-child(2) .styles__line {
+  color: var(--text-secondary);
+}
+
+.styles__line-mask {
+  display: block;
+  overflow: hidden;
+  margin-top: -0.05em;
+  margin-bottom: -0.05em;
+  padding-top: 0.45em;
+  padding-bottom: 0.55em;
+}
+
+.styles__line {
+  display: block;
+  will-change: transform;
+}
+
+.styles__desc {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  line-height: var(--leading-normal);
+  color: var(--text-secondary);
+  max-width: 40ch;
+}
+
+/* ------------------------------------------------------------
+
+   CARD LIST
+   ------------------------------------------------------------ */
+.styles__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* ------------------------------------------------------------
+
+   RESPONSIVE
+   ------------------------------------------------------------ */
+@media (max-width: 1199px) {
+  .styles__heading {
+    font-size: clamp(2.8rem, 6.5vw, 5.5rem);
+  }
+}
+
+@media (max-width: 767px) {
+  .styles__header {
+    margin-bottom: var(--space-8);
+  }
+
+  .styles__heading {
+    font-size: clamp(2.2rem, 9vw, 3.8rem);
+  }
+
+  .styles__line-mask {
+    padding-top: 0.35em;
+    padding-bottom: 0.45em;
+  }
+
+  .styles__desc {
+    font-size: var(--text-base);
+    max-width: 100%;
+  }
+
+  .styles__list {
+    gap: var(--space-4);
+  }
+}
+
+/* ------------------------------------------------------------
+
+   REDUCED MOTION
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .styles__line {
+    transition: none;
+  }
+}
