@@ -1,0 +1,334 @@
+/* ============================================================
+   TESTIMONIALS — INFINITE EDITORIAL MARQUEE
+   Two opposing CSS-animated rows. Seamless loop via a
+   duplicated card set per row + translate3d(-50%) on the track.
+   ============================================================ */
+
+.testimonials {
+  --testimonials-gap: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------
+   HEADER
+   ------------------------------------------------------------ */
+.testimonials__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  margin-bottom: var(--space-16);
+}
+
+.testimonials__eyebrow {
+  color: var(--accent);
+}
+
+.testimonials__title {
+  font-family: var(--font-heading);
+  font-size: clamp(3rem, 7vw, 7rem);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.testimonials__line {
+  display: block;
+}
+
+.testimonials__line--alt {
+  color: var(--text-secondary);
+}
+
+.testimonials__desc {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  line-height: var(--leading-normal);
+  color: var(--text-secondary);
+  max-width: 44ch;
+}
+
+/* ------------------------------------------------------------
+   MARQUEE — ROWS
+   ------------------------------------------------------------ */
+.testimonials__marquee {
+  display: flex;
+  flex-direction: column;
+}
+
+.testimonials__row {
+  position: relative;
+  overflow: hidden;
+}
+
+.testimonials__row + .testimonials__row {
+  margin-top: var(--testimonials-gap);
+}
+
+/* Edge fade — cards dissolve into the background */
+.testimonials__row::before,
+.testimonials__row::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 7vw;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.testimonials__row::before {
+  left: 0;
+  background: linear-gradient(to right, var(--bg), rgba(8, 10, 12, 0));
+}
+
+.testimonials__row::after {
+  right: 0;
+  background: linear-gradient(to left, var(--bg), rgba(8, 10, 12, 0));
+}
+
+/* ------------------------------------------------------------
+   MARQUEE — TRACK + DUPLICATED SETS
+   Each set carries its own gap and right padding so the spacing
+   across the set boundary stays identical. Track width = 2 sets,
+   therefore -50% equals exactly one set — seamless loop.
+   ------------------------------------------------------------ */
+.testimonials__track {
+  display: flex;
+  flex-wrap: nowrap;
+  width: max-content;
+  min-width: 0;
+  will-change: transform;
+}
+
+.testimonials__set {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  flex-shrink: 0;
+  gap: var(--testimonials-gap);
+  padding-right: var(--testimonials-gap);
+}
+
+/* ------------------------------------------------------------
+   ANIMATION
+   ------------------------------------------------------------ */
+.testimonials__row--forward .testimonials__track {
+  animation: marquee-forward 38s linear infinite;
+}
+
+.testimonials__row--reverse .testimonials__track {
+  animation: marquee-reverse 42s linear infinite;
+}
+
+@keyframes marquee-forward {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes marquee-reverse {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* ------------------------------------------------------------
+   TESTIMONIAL CARD — wide, short, editorial strip
+   ------------------------------------------------------------ */
+.testimonial-card {
+  flex-shrink: 0;
+  min-height: 165px;
+  width: clamp(360px, 32vw, 520px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.testimonial-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.testimonial-card__stars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.testimonial-card__star {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+.testimonial-card__star path {
+  fill: none;
+  stroke: var(--text-muted);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+
+.testimonial-card__star--full path {
+  fill: var(--accent);
+  stroke: var(--accent);
+}
+
+.testimonial-card__star--half path {
+  fill: var(--star-fill);
+}
+
+.testimonial-card__rating {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.testimonial-card__text {
+  flex: 1 1 auto;
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1.1vw, 17px);
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.testimonial-card__name {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+}
+
+.testimonial-card:hover {
+  border-color: rgba(242, 244, 247, 0.22);
+}
+
+/* ------------------------------------------------------------
+   TABLET (768px – 1199px)
+   ------------------------------------------------------------ */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .testimonials {
+    --testimonials-gap: 16px;
+  }
+
+  .testimonial-card {
+    width: clamp(340px, 42vw, 440px);
+    min-height: 158px;
+  }
+}
+
+/* ------------------------------------------------------------
+   MOBILE (<= 767px)
+   ------------------------------------------------------------ */
+@media (max-width: 767px) {
+  .testimonials {
+    --testimonials-gap: 14px;
+  }
+
+  .testimonials__header {
+    margin-bottom: var(--space-12);
+  }
+
+  .testimonials__title {
+    font-size: clamp(2.4rem, 11vw, 3.6rem);
+  }
+
+  .testimonials__desc {
+    font-size: var(--text-base);
+  }
+
+  .testimonials__row::before,
+  .testimonials__row::after {
+    width: 12vw;
+  }
+
+  .testimonial-card {
+    width: min(84vw, 340px);
+    min-height: 154px;
+    padding: clamp(18px, 5vw, 24px);
+    border-radius: var(--radius-md);
+  }
+
+  .testimonial-card__star {
+    width: 13px;
+    height: 13px;
+  }
+
+  .testimonial-card__rating {
+    font-size: 11px;
+  }
+
+  .testimonial-card__text {
+    font-size: clamp(13.5px, 3.8vw, 15px);
+  }
+
+  .testimonial-card__name {
+    font-size: 10px;
+  }
+}
+
+/* ------------------------------------------------------------
+   REDUCED MOTION — NO CONTINUOUS MARQUEE
+   Both marquee rows animate infinitely for the life of the page.
+   For reduced-motion users the animation is cancelled and each row
+   becomes a natively scrollable strip instead. The duplicated set
+   is dropped, since it only exists to make the -50% loop seamless.
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .testimonials__row--forward .testimonials__track,
+  .testimonials__row--reverse .testimonials__track {
+    animation: none;
+    transform: none;
+    will-change: auto;
+  }
+
+  .testimonials__row {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+
+  .testimonials__set[aria-hidden='true'] {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------
+   VERY SMALL (<= 400px)
+   ------------------------------------------------------------ */
+@media (max-width: 400px) {
+  .testimonial-card {
+    width: min(88vw, 320px);
+    min-height: 0;
+    padding: 18px;
+  }
+
+  .testimonial-card__top {
+    gap: var(--space-3);
+  }
+
+  .testimonial-card__text {
+    font-size: 13px;
+    line-height: 1.55;
+  }
+}
