@@ -1,0 +1,419 @@
+/* ============================================================
+   OUR PROCESS — GSAP PINNED HORIZONTAL SCROLL
+   Vertical page scroll drives horizontal translation of the
+   track via ScrollTrigger (pin + scrub + transform/x).
+   ============================================================ */
+
+.process {
+  position: relative;
+  overflow-x: clip;
+}
+
+/* ------------------------------------------------------------
+   INTRO — EDITORIAL COVER
+   ------------------------------------------------------------ */
+.process__intro {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-8);
+  padding: var(--container-pad);
+  padding-block: clamp(6rem, 14vh, 10rem);
+}
+
+.process__heading {
+  font-family: var(--font-heading);
+  font-size: clamp(3rem, 8vw, 7.5rem);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.process__heading-line {
+  display: block;
+}
+
+.process__heading-line:last-child {
+  color: var(--text-secondary);
+}
+
+.process__sub {
+  font-size: var(--text-lg);
+  line-height: var(--leading-normal);
+  color: var(--text-secondary);
+  max-width: 44ch;
+}
+
+.process__hint {
+  margin-top: auto;
+  padding-top: var(--space-12);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ------------------------------------------------------------
+   PINNED HORIZONTAL EXPERIENCE
+   The horizontal wrapper is pinned by ScrollTrigger.
+   The track is the only element that moves (transform: x).
+   ------------------------------------------------------------ */
+.process__horizontal {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+}
+
+.process__viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.process__track {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: clamp(40px, 6vw, 100px);
+  height: 100%;
+  width: max-content;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  will-change: transform;
+}
+
+/* ------------------------------------------------------------
+   CHAPTER PANEL
+   ------------------------------------------------------------ */
+.process__panel {
+  position: relative;
+  flex: 0 0 clamp(720px, 82vw, 1200px);
+  min-width: 0;
+  overflow: hidden;
+  padding: clamp(24px, 5vw, 80px);
+  border-top: var(--border-thin);
+  border-bottom: var(--border-thin);
+}
+
+.process__panel:nth-child(even) {
+  background: rgba(242, 244, 247, 0.022);
+}
+
+.process__number {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  font-family: var(--font-heading);
+  font-size: clamp(10rem, 25vw, 28rem);
+  line-height: 0.8;
+  letter-spacing: -0.03em;
+  color: rgba(143, 168, 192, 0.14);
+  pointer-events: none;
+  user-select: none;
+  will-change: transform, opacity;
+}
+
+.process__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.process__step {
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  color: var(--accent);
+}
+
+.process__body {
+  margin-block: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-6);
+  max-width: 36ch;
+}
+
+.process__title {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-heading);
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.process__title-line {
+  display: block;
+}
+
+.process__description {
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--text-secondary);
+}
+
+.process__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.process__detail {
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+}
+
+.process__rule {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ------------------------------------------------------------
+   PROGRESS INDICATOR
+   ------------------------------------------------------------ */
+.process__progress {
+  position: absolute;
+  left: 50%;
+  bottom: max(24px, 4vh);
+  transform: translateX(-50%);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.process__progress-label,
+.process__progress-current,
+.process__progress-total {
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+}
+
+.process__progress-current,
+.process__progress-total {
+  font-variant-numeric: tabular-nums;
+  width: 2ch;
+}
+
+.process__progress-label {
+  opacity: 0.7;
+}
+
+.process__progress-current {
+  color: var(--accent);
+}
+
+.process__progress-total {
+  opacity: 0.7;
+}
+
+.process__progress-line {
+  width: clamp(100px, 16vw, 240px);
+  height: 1px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.process__progress-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
+}
+
+/* ------------------------------------------------------------
+   TABLET (768px – 1199px) — same interaction, adjusted scale
+   ------------------------------------------------------------ */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .process__panel {
+    flex-basis: clamp(560px, 86vw, 900px);
+    padding: clamp(24px, 4vw, 48px);
+  }
+
+  .process__track {
+    gap: clamp(24px, 4vw, 48px);
+  }
+
+  .process__title {
+    font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+  }
+
+  .process__number {
+    font-size: clamp(8rem, 24vw, 15rem);
+  }
+
+  .process__heading {
+    font-size: clamp(2.8rem, 7vw, 5rem);
+  }
+}
+
+/* ------------------------------------------------------------
+   MOBILE (<= 767px) — horizontal experience preserved
+   Simpler panels share the same pinned scroll-driven movement.
+   ------------------------------------------------------------ */
+@media (max-width: 767px) {
+  .process__intro {
+    min-height: 0;
+    gap: var(--space-6);
+    padding-block: clamp(4.5rem, 16vh, 7rem);
+  }
+
+  .process__heading {
+    font-size: clamp(2.4rem, 11vw, 3.6rem);
+  }
+
+  .process__sub {
+    font-size: var(--text-base);
+  }
+
+  .process__hint {
+    margin-top: var(--space-8);
+    padding-top: 0;
+  }
+
+  /* Mobile: keep the same pinned horizontal-scrub experience as desktop.
+     Panels sit side-by-side in a nowrap, max-content track that ScrollTrigger
+     translates horizontally while the wrapper is pinned. */
+  .process__horizontal {
+    position: relative;
+    height: 100vh;
+    height: 100svh;
+  }
+
+  .process__viewport {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .process__track {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: clamp(16px, 4.5vw, 24px);
+    height: 100%;
+    width: max-content;
+    min-width: 0;
+    overflow: visible;
+    padding: 0;
+  }
+
+  .process__panel {
+    position: relative;
+    flex: 0 0 clamp(280px, 86vw, 480px);
+    width: auto;
+    max-width: none;
+    height: 100%;
+    overflow: hidden;
+    padding: var(--space-8) var(--space-6);
+    border-top: var(--border-thin);
+    border-bottom: var(--border-thin);
+  }
+
+  .process__number {
+    font-size: clamp(6rem, 30vw, 9rem);
+  }
+
+  .process__title {
+    font-size: clamp(2rem, 8.5vw, 3rem);
+  }
+
+  .process__description {
+    font-size: var(--text-sm);
+  }
+
+  .process__content {
+    gap: var(--space-8);
+  }
+
+  .process__progress {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------
+   REDUCED MOTION — STATIC VERTICAL STACK
+   The pinned horizontal scrub is never created when the user
+   prefers reduced motion, so the pinned-height/overflow-hidden
+   layout has to be undone or the panels become unreachable.
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .process__intro {
+    min-height: auto;
+  }
+
+  .process__hint {
+    display: none;
+  }
+
+  .process__horizontal {
+    height: auto;
+  }
+
+  .process__viewport {
+    position: static;
+    inset: auto;
+    overflow: visible;
+  }
+
+  .process__track {
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: var(--space-6);
+    will-change: auto;
+  }
+
+  .process__panel {
+    flex: 0 0 auto;
+    width: 100%;
+    height: auto;
+    padding-block: var(--space-10);
+  }
+
+  .process__number {
+    will-change: auto;
+  }
+
+  .process__body {
+    margin-block: var(--space-8);
+  }
+
+  /* Driven by scrub progress, so it would sit frozen at 01 / 0%. */
+  .process__progress {
+    display: none;
+  }
+}
