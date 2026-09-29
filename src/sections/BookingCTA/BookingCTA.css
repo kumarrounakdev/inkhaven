@@ -1,0 +1,486 @@
+/* ============================================================
+   BOOKING — APPOINTMENT REQUEST
+   Two-column editorial section: consultation intro + numbered
+   booking form (01 details / 02 tattoo / 03 preferences).
+   Cold, dark, premium, typography-driven. No synthetic effects.
+   ============================================================ */
+
+.booking {
+  --booking-gap: 24px;
+  --field-gap: clamp(20px, 2vw, 28px);
+  --booking-error: #d08a8a;
+  color-scheme: dark;
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------
+   LAYOUT — LEFT INTRO / RIGHT FORM
+   ------------------------------------------------------------ */
+.booking__layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-16);
+  align-items: start;
+}
+
+.booking__intro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-8);
+  max-width: 36rem;
+}
+
+.booking__eyebrow {
+  color: var(--accent);
+}
+
+.booking__title {
+  font-family: var(--font-heading);
+  font-size: clamp(2.6rem, 5.5vw, 5.8rem);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.booking__title-line {
+  display: block;
+}
+
+.booking__title-line--accent {
+  color: var(--accent);
+}
+
+.booking__lead {
+  font-family: var(--font-body);
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: var(--leading-normal);
+  color: var(--text-primary);
+}
+
+.booking__description {
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--text-secondary);
+  max-width: 36ch;
+}
+
+.booking__notes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-top: var(--space-6);
+  border-top: var(--border-thin);
+  list-style: none;
+}
+
+.booking__notes-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+}
+
+.booking__notes-item::before {
+  content: '';
+  flex-shrink: 0;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.7;
+}
+
+/* ------------------------------------------------------------
+   FORM
+   ------------------------------------------------------------ */
+.booking__form {
+  display: grid;
+  gap: clamp(28px, 4vw, 40px);
+}
+
+.booking__step {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.booking__step + .booking__step {
+  padding-top: 4px;
+}
+
+.booking__step-header {
+  margin-bottom: var(--booking-gap);
+}
+
+.booking__step-title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--text-primary);
+}
+
+/* ------------------------------------------------------------
+   FIELD GRIDS
+   label -> 8px -> control -> (gap) -> next field
+   ------------------------------------------------------------ */
+.booking__fields,
+.booking__grid-2 {
+  display: grid;
+  gap: var(--field-gap);
+}
+
+.booking__grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.booking__fields + .booking__grid-2,
+.booking__grid-2 + .booking__fields,
+.booking__grid-2 + .booking__grid-2 {
+  margin-top: var(--field-gap);
+}
+
+.booking__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* ------------------------------------------------------------
+   FIELDS — editorial underline style
+   ------------------------------------------------------------ */
+.booking__label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--text-secondary);
+}
+
+.booking__label-mark {
+  margin-left: 4px;
+  color: var(--accent);
+}
+
+.booking__input,
+.booking__select,
+.booking__textarea {
+  width: 100%;
+  background: var(--surface, rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  transition: border-color var(--dur-base) var(--ease-out), background-color var(--dur-base) var(--ease-out);
+}
+
+.booking__input::placeholder,
+.booking__textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 1;
+}
+
+.booking__input:focus,
+.booking__select:focus,
+.booking__textarea:focus,
+.booking__input:focus-visible,
+.booking__select:focus-visible,
+.booking__textarea:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--surface, rgba(255, 255, 255, 0.04));
+}
+
+.booking__date-wrap {
+  position: relative;
+}
+
+.booking__date-input {
+  padding-right: 44px;
+}
+
+.booking__calendar-icon {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+  color: var(--text-muted);
+}
+
+.booking__date-picker-native {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 48px;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+}
+
+.booking__date-picker-native::-webkit-calendar-picker-indicator {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.booking__select-wrap {
+  position: relative;
+}
+
+.booking__select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 38px;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.booking__select-arrow {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  width: 16px;
+  height: 16px;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.booking__textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+/* ------------------------------------------------------------
+   VALIDATION
+   ------------------------------------------------------------ */
+.booking__error {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  color: var(--booking-error);
+}
+
+.booking__field.is-error .booking__input,
+.booking__field.is-error .booking__select,
+.booking__field.is-error .booking__textarea {
+  border-color: var(--booking-error);
+}
+
+.booking__form-error {
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid rgba(208, 138, 138, 0.4);
+  border-radius: 10px;
+  background: rgba(208, 138, 138, 0.08);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--booking-error);
+}
+
+/* ------------------------------------------------------------
+   CTA + MICROCOPY
+   ------------------------------------------------------------ */
+.booking__submit {
+  width: 100%;
+  min-height: 52px;
+  padding: 14px 22px;
+}
+
+.booking__submit-arrow {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.booking__submit:hover .booking__submit-arrow {
+  transform: translateX(4px);
+}
+
+.booking__fineprint {
+  display: grid;
+  gap: 4px;
+}
+
+.booking__fineprint p {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+/* ------------------------------------------------------------
+   SUCCESS STATE
+   ------------------------------------------------------------ */
+.booking__success {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding-block: var(--space-12);
+  border-top: var(--border-thin);
+}
+
+.booking__success-eyebrow {
+  color: var(--accent);
+}
+
+.booking__success-title {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.booking__success-text {
+  max-width: 42ch;
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--text-secondary);
+}
+
+.booking__success-reset {
+  margin-top: var(--space-4);
+  padding: var(--space-2) 0;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+
+.booking__success-reset:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.booking__success-reset:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* ------------------------------------------------------------
+   RESPONSIVE
+   ------------------------------------------------------------ */
+.booking__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (min-width: 992px) {
+  .booking__layout {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: clamp(3rem, 6vw, 6rem);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .booking__title {
+    font-size: clamp(2.6rem, 6vw, 4.5rem);
+  }
+}
+
+@media (max-width: 767px) {
+  .booking__layout {
+    gap: var(--space-12);
+  }
+
+  .booking__title {
+    font-size: clamp(2.3rem, 11vw, 3.4rem);
+  }
+
+  .booking__description {
+    font-size: var(--text-base);
+  }
+
+  .booking__grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .booking__fields,
+  .booking__grid-2 {
+    gap: var(--space-5);
+  }
+
+  .booking__fields + .booking__grid-2,
+  .booking__grid-2 + .booking__fields,
+  .booking__grid-2 + .booking__grid-2 {
+    margin-top: var(--space-5);
+  }
+
+  .booking__form {
+    gap: var(--space-8);
+  }
+
+  .booking__submit {
+    min-height: 56px;
+    padding: 16px 20px;
+  }
+}
+
+/* ------------------------------------------------------------
+   REDUCED MOTION — no decorative transitions
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .booking__input,
+  .booking__select,
+  .booking__textarea {
+    transition: none;
+  }
+
+  .booking__submit-arrow {
+    transition: none;
+  }
+
+  .booking__submit:hover .booking__submit-arrow {
+    transform: none;
+  }
+
+  .booking__success-reset {
+    transition: none;
+  }
+}
