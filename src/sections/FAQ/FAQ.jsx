@@ -50,7 +50,7 @@ const faqItems = [
     id: 8,
     question: 'What should I do after getting tattooed?',
     answer:
-      'Follow the studio\u2019s specific aftercare instructions for cleaning and protection while the piece heals. If anything feels off, reach out and we will guide you through it.',
+      'Follow the studio’s specific aftercare instructions for cleaning and protection while the piece heals. If anything feels off, reach out and we will guide you through it.',
   },
 ]
 
