@@ -26,6 +26,11 @@ dist-ssr
 # Local-only development notes
 commands.txt
 
+# Local env — holds the n8n webhook URL (never commit real values)
+.env
+.env.local
+!.env.example
+
 # Local tooling / scratch
 .freebuff/
 prev.log
