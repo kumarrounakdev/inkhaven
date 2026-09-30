@@ -315,6 +315,22 @@
   padding: 14px 22px;
 }
 
+.booking__submit:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+.booking__submit-error {
+  margin: 0 0 4px;
+  padding: 10px 14px;
+  border: 1px solid rgba(208, 138, 138, 0.4);
+  border-radius: 10px;
+  background: rgba(208, 138, 138, 0.08);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--booking-error);
+}
+
 .booking__submit-arrow {
   width: 16px;
   height: 16px;

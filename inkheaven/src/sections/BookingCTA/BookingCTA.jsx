@@ -32,6 +32,10 @@ const budgetOptions = [
   'Not Sure',
 ]
 
+// n8n "Receive Webhook" URL. Set VITE_N8N_WEBHOOK_URL in .env — it is inlined at
+// build time, so the fallback only exists to keep `npm run dev` from hard-failing.
+const WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://webhook.example.com/inkhaven-booking'
+
 function Field({ id, label, required, error, children }) {
   return (
     <div className={`booking__field${error ? ' is-error' : ''}`}>
@@ -153,6 +157,8 @@ function BookingForm({ onSubmit }) {
   })
   const [errors, setErrors] = useState({})
   const [companyId, setCompanyId] = useState('') // honeypot — humans never see it
+  const [submitError, setSubmitError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -168,8 +174,9 @@ function BookingForm({ onSubmit }) {
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    if (submitting) return
     const next = {}
     if (!values.name.trim()) next.name = 'Please enter your name.'
     if (!values.email.trim()) next.email = 'Please enter your email address.'
@@ -187,7 +194,35 @@ function BookingForm({ onSubmit }) {
     setErrors(next)
     if (Object.keys(next).length > 0) return
 
-    onSubmit()
+    // Honeypot filled => bot. Pretend it worked so it learns nothing, send nothing.
+    if (companyId.trim()) {
+      onSubmit()
+      return
+    }
+
+    setSubmitting(true)
+    setSubmitError('')
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...values,
+          dateIso,
+          budget: values.budget || null,
+          submittedAt: new Date().toISOString(),
+          page: window.location.href,
+        }),
+      })
+      if (!res.ok) throw new Error(`Webhook responded ${res.status}`)
+      onSubmit()
+    } catch {
+      setSubmitError(
+        'We could not send your request. Please try again, or email us directly.',
+      )
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -441,10 +476,15 @@ function BookingForm({ onSubmit }) {
         style={{ position: 'absolute', left: '-9999px', height: 0, width: 0, opacity: 0 }}
       />
 
-      <Button type="submit" className="booking__submit">
-        Request Appointment
+      <Button type="submit" className="booking__submit" disabled={submitting}>
+        {submitting ? 'Sending...' : 'Request Appointment'}
         <SubmitArrow />
       </Button>
+      {submitError && (
+        <p className="booking__submit-error" role="alert">
+          {submitError}
+        </p>
+      )}
       <div className="booking__fineprint">
         <p>Appointments are confirmed after consultation.</p>
         <p>Submitting this request does not guarantee a booking.</p>
