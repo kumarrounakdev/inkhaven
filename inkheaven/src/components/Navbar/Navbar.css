@@ -1,5 +1,5 @@
 /* ============================================================
-   NAVBAR — INKHAVEN
+   NAVBAR — INKHEAVEN
    Floating macOS-inspired dock (desktop) + compact bottom nav (mobile)
    Refined, cold, editorial. No glassmorphism excess.
    ============================================================ */
@@ -127,7 +127,8 @@
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 6px 16px;
+  gap: 2px;
+  padding: 6px 10px;
   border: 1px solid var(--border);
   border-radius: 18px;
   background-color: rgba(16, 19, 24, 0.88);
@@ -142,9 +143,10 @@
   align-items: center;
   justify-content: center;
   gap: 3px;
-  min-width: 44px;
+  flex: 1 1 0;
+  min-width: 0;
   min-height: 44px;
-  padding: 6px clamp(4px, 1.5vw, 10px);
+  padding: 6px 2px;
   border-radius: 10px;
   color: var(--text-muted);
   -webkit-tap-highlight-color: transparent;

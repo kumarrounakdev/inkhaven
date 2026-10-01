@@ -184,9 +184,9 @@ function Preloader() {
   if (hidden) return null
 
   return (
-    <div className="preloader" ref={overlay} role="status" aria-label="Loading Inkhaven">
+    <div className="preloader" ref={overlay} role="status" aria-label="Loading Inkheaven">
       <div className="preloader__content" ref={content}>
-        <span className="preloader__brand">Inkhaven</span>
+        <span className="preloader__brand">Inkheaven</span>
         <span className="preloader__pct" aria-hidden="true">
           <span ref={pct}>000%</span>
         </span>

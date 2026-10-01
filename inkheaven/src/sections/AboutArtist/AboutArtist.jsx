@@ -12,7 +12,7 @@ function AboutArtist() {
             <img
               className="artist__img"
               src="/images/about-section/artist.webp"
-              alt="Inkhaven tattoo artist at work in the studio"
+              alt="Inkheaven tattoo artist at work in the studio"
               width="600"
               height="750"
               loading="lazy"

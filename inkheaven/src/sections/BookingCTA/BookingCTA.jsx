@@ -34,7 +34,7 @@ const budgetOptions = [
 
 // n8n "Receive Webhook" URL. Set VITE_N8N_WEBHOOK_URL in .env — it is inlined at
 // build time, so the fallback only exists to keep `npm run dev` from hard-failing.
-const WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://webhook.example.com/inkhaven-booking'
+const WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://webhook.example.com/inkheaven-booking'
 
 function Field({ id, label, required, error, children }) {
   return (

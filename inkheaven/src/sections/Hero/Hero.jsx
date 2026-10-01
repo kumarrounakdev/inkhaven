@@ -54,7 +54,7 @@ function Hero() {
       <span className="hero__num" aria-hidden="true">01</span>
 
       <div className="hero__top">
-        <span className="hero__meta">Inkhaven®</span>
+        <span className="hero__meta">Inkheaven®</span>
         <span className="hero__meta hero__meta--right">
           Delhi / India · Est. 2018
         </span>

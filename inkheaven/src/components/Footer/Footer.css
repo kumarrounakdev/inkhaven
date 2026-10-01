@@ -19,14 +19,12 @@
 .footer__wordmark {
   font-family: var(--font-heading);
   font-weight: 600;
-  font-size: clamp(3.25rem, 16.5vw, 20rem);
-  line-height: 0.95;
-  letter-spacing: -0.005em;
+  font-size: min(15vw, 12.5rem);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
   text-transform: uppercase;
   color: var(--text-primary);
-  max-width: var(--container-max);
-  margin-inline: auto;
-  padding-inline: var(--container-pad);
+  margin: 0;
   white-space: nowrap;
 }
 

@@ -14,6 +14,7 @@ const mobileLinks = [
   { id: 'work', label: 'Work', icon: 'work' },
   { id: 'styles', label: 'Styles', icon: 'styles' },
   { id: 'artist', label: 'Artist', icon: 'artist' },
+  { id: 'faq', label: 'FAQ', icon: 'faq' },
   { id: 'booking', label: 'Booking', icon: 'booking' },
 ]
 
@@ -43,6 +44,13 @@ function Icon({ name }) {
         <path d="M5 20c.8-3.4 3.6-5 7-5s6.2 1.6 7 5" />
       </>
     ),
+    faq: (
+      <>
+        <circle cx="12" cy="12" r="2.5" />
+        <path d="M9.1 9.2a3.5 3.5 0 0 1 5.8 2.3c0 1.2-.9 2-2 2h-.5" />
+        <path d="M11.8 16.5h.4" />
+      </>
+    ),
     booking: (
       <>
         <rect x="6" y="4" width="12" height="16" rx="2" />
@@ -61,6 +69,7 @@ function Navbar() {
   const dockerRef = useRef(null)
   const [active, setActive] = useState('top')
   const reduced = useRef(false)
+  const lastPassed = useRef('top')
 
   useEffect(() => {
     reduced.current =
@@ -72,6 +81,7 @@ function Navbar() {
   useEffect(() => {
     const ids = ['top', ...desktopLinks.map((l) => l.id), 'booking']
     const visible = new Map()
+    const observed = new Set()
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -90,16 +100,34 @@ function Navbar() {
             best = id
           }
         }
-        setActive(best || 'top')
+        if (best) lastPassed.current = best
+        setActive(best || lastPassed.current)
       },
       { rootMargin: '-45% 0px -45% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] },
     )
 
-    for (const id of ids) {
-      const el = document.getElementById(id)
-      if (el) observer.observe(el)
+    const syncObserved = () => {
+      for (const id of ids) {
+        if (observed.has(id)) continue
+        const el = document.getElementById(id)
+        if (el) {
+          observed.add(id)
+          observer.observe(el)
+        }
+      }
     }
-    return () => observer.disconnect()
+
+    syncObserved()
+
+    // Lazily loaded sections (FAQ, Booking) mount after this effect runs,
+    // so watch the DOM and observe them as soon as they appear.
+    const mutations = new MutationObserver(syncObserved)
+    mutations.observe(document.body, { childList: true, subtree: true })
+
+    return () => {
+      observer.disconnect()
+      mutations.disconnect()
+    }
   }, [])
 
   const handleDockMove = useCallback((e) => {
@@ -134,7 +162,7 @@ function Navbar() {
     <>
       <nav className="dock" aria-label="Primary" ref={dockerRef}>
         <div className="dock__inner" onMouseMove={handleDockMove} onMouseLeave={handleDockLeave}>
-          <a className="dock__brand" href="#top">Inkhaven</a>
+          <a className="dock__brand" href="#top">Inkheaven</a>
           <span className="dock__divider" aria-hidden="true" />
           <ul className="dock__list">
             {desktopLinks.map((link) => (

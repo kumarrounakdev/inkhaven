@@ -42,9 +42,7 @@ function Footer() {
       <div className="footer__masthead">
         <Container>
           <span className="label footer__eyebrow" data-reveal>09 / The End</span>
-        </Container>
-        <h2 className="footer__wordmark" data-reveal>Inkhaven</h2>
-        <Container>
+          <h2 className="footer__wordmark" data-reveal>Inkheaven</h2>
           <p className="footer__tagline" data-reveal>Tattoo / Art / Identity</p>
         </Container>
       </div>
@@ -99,7 +97,7 @@ function Footer() {
       <div className="footer__bottom-bar">
         <Container>
           <div className="footer__bottom">
-            <p className="footer__copyright">© {year} Inkhaven</p>
+            <p className="footer__copyright">© {year} Inkheaven</p>
           </div>
         </Container>
       </div>

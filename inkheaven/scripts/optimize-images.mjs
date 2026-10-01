@@ -1,4 +1,4 @@
-// Optimize-image pipeline for Inkhaven.
+// Optimize-image pipeline for Inkheaven.
 // Generates responsive width variants (WebP, plus AVIF for anime pieces) from the
 // master files in public/images, then prunes superseded/oversized masters.
 // Storage budget: every work tile and the hero get width-capped files matching
