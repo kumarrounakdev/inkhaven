@@ -40,15 +40,16 @@ function CloseIcon() {
 function SettingsPanel() {
   const [open, setOpen] = useState(false)
   const [status, setStatus] = useState(null)
+  // Read once on mount: the saved URL is what decides whether the gear shows
+  // as ready before the panel is ever opened.
+  const [localUrl, setLocalUrl] = useState(() => getWebhookUrl())
   const [draft, setDraft] = useState('')
   const [error, setError] = useState('')
   const [saved, setSaved] = useState(false)
   const panelRef = useRef(null)
   const triggerRef = useRef(null)
 
-  const overrideAllowed = Boolean(status?.overrideAllowed)
-
-  // Opens with a clean form and asks the server whether an endpoint is set up.
+  // Opens with a clean form and asks the server whether it holds a fallback.
   // Only the fetch lives here; the form resets happen in the click handler.
   useEffect(() => {
     if (!open) return
@@ -60,7 +61,7 @@ function SettingsPanel() {
         if (!cancelled) setStatus(data)
       })
       .catch(() => {
-        if (!cancelled) setStatus({ configured: false, overrideAllowed: false })
+        if (!cancelled) setStatus({ configured: false })
       })
 
     return () => {
@@ -92,12 +93,14 @@ function SettingsPanel() {
       return
     }
     setWebhookUrl(value)
+    setLocalUrl(value)
     setError('')
     setSaved(true)
   }
 
   const handleClear = () => {
     setWebhookUrl('')
+    setLocalUrl('')
     setDraft('')
     setError('')
     setSaved(false)
@@ -128,7 +131,7 @@ function SettingsPanel() {
       <button
         ref={triggerRef}
         type="button"
-        className={`settings__trigger${open ? ' is-open' : ''}${status?.configured ? ' is-ready' : ''}`}
+        className={`settings__trigger${open ? ' is-open' : ''}${status?.configured || localUrl ? ' is-ready' : ''}`}
         onClick={() => (open ? handleClose() : handleOpen())}
         aria-expanded={open}
         aria-haspopup="dialog"
@@ -162,71 +165,55 @@ function SettingsPanel() {
             </button>
           </div>
 
-          {overrideAllowed ? (
-            <>
-              <p className="settings__hint">
-                This server accepts a local override. It is saved in this browser only and never
-                sent anywhere but this origin.
-              </p>
-              <form className="settings__form" onSubmit={handleSave} noValidate>
-                <label className="settings__label" htmlFor="settings-webhook-url">
-                  n8n webhook URL
-                </label>
-                <input
-                  className={`settings__input${error ? ' is-error' : ''}`}
-                  id="settings-webhook-url"
-                  type="url"
-                  inputMode="url"
-                  autoComplete="off"
-                  spellCheck="false"
-                  placeholder="https://your-n8n-host/webhook/booking"
-                  value={draft}
-                  onChange={(e) => {
-                    setDraft(e.target.value)
-                    setError('')
-                    setSaved(false)
-                  }}
-                  aria-describedby={error ? 'settings-error' : undefined}
-                  aria-invalid={Boolean(error)}
-                />
-                {error && (
-                  <span className="settings__error" id="settings-error" role="alert">
-                    {error}
-                  </span>
-                )}
-                {!error && saved && (
-                  <span className="settings__saved" role="status">
-                    Saved for this browser.
-                  </span>
-                )}
-                <div className="settings__actions">
-                  <button type="submit" className="settings__save">
-                    Save
-                  </button>
-                  <button type="button" className="settings__clear" onClick={handleClear}>
-                    Clear
-                  </button>
-                </div>
-              </form>
-            </>
-          ) : (
-            <div className="settings__form">
-              <p className="settings__hint">
-                Appointment requests are sent by the server, so the webhook URL is never exposed
-                to the browser.
-              </p>
-              <p
-                className={`settings__status${status?.configured ? ' settings__saved' : ' settings__error'}`}
-                role="status"
-              >
-                {status === null
-                  ? 'Checking…'
-                  : status.configured
-                    ? 'Endpoint configured on the server.'
-                    : 'No endpoint configured. Set BOOKING_WEBHOOK_URL in the server environment.'}
-              </p>
+          <p className="settings__hint">
+            Bookings are posted to this webhook URL. It is saved in this browser and travels with
+            each submission, so you can point it anywhere — including a local n8n on localhost.
+          </p>
+          <form className="settings__form" onSubmit={handleSave} noValidate>
+            <label className="settings__label" htmlFor="settings-webhook-url">
+              n8n webhook URL
+            </label>
+            <input
+              className={`settings__input${error ? ' is-error' : ''}`}
+              id="settings-webhook-url"
+              type="url"
+              inputMode="url"
+              autoComplete="off"
+              spellCheck="false"
+              placeholder="http://localhost:5678/webhook/inkdesk-booking"
+              value={draft}
+              onChange={(e) => {
+                setDraft(e.target.value)
+                setError('')
+                setSaved(false)
+              }}
+              aria-describedby={error ? 'settings-error' : undefined}
+              aria-invalid={Boolean(error)}
+            />
+            {error && (
+              <span className="settings__error" id="settings-error" role="alert">
+                {error}
+              </span>
+            )}
+            {!error && saved && (
+              <span className="settings__saved" role="status">
+                Saved for this browser.
+              </span>
+            )}
+            {status?.configured && (
+              <span className="settings__note">
+                The server also holds a fallback URL, used when this field is empty.
+              </span>
+            )}
+            <div className="settings__actions">
+              <button type="submit" className="settings__save">
+                Save
+              </button>
+              <button type="button" className="settings__clear" onClick={handleClear}>
+                Clear
+              </button>
             </div>
-          )}
+          </form>
         </div>
       )}
     </div>

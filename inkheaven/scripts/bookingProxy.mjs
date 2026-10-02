@@ -4,16 +4,16 @@
  * The n8n webhook URL lives in the SERVER environment and is never shipped to
  * the browser, which is what lets the site keep `connect-src 'self'`.
  *
+ * The destination is whatever URL the visitor saved in the site settings, sent
+ * as `x-webhook-url`. BOOKING_WEBHOOK_URL is only the fallback for when the
+ * browser supplies nothing.
+ *
  * Env (all optional):
- *   BOOKING_WEBHOOK_URL           destination n8n "Receive Webhook" URL
- *   BOOKING_ADMIN_TOKEN           when set, required to change the URL at runtime
- *   ALLOW_CLIENT_WEBHOOK_OVERRIDE set to "1" to honor a client-supplied URL
- *                                 (local dev convenience; off by default because
- *                                 it turns this endpoint into an open relay)
- *   TRUST_PROXY                   set to "1" to read the client IP from
- *                                 X-Forwarded-For (only behind a real proxy)
- *   BOOKING_RATE_LIMIT            max submissions per window, default 5
- *   BOOKING_RATE_WINDOW_MS        window length in ms, default 10 minutes
+ *   BOOKING_WEBHOOK_URL      fallback destination when no override is sent
+ *   TRUST_PROXY              set to "1" to read the client IP from
+ *                            X-Forwarded-For (only behind a real proxy)
+ *   BOOKING_RATE_LIMIT       max submissions per window, default 5
+ *   BOOKING_RATE_WINDOW_MS   window length in ms, default 10 minutes
  */
 
 // Load .env into process.env without adding a dependency. Server-side only:
@@ -25,8 +25,6 @@ try {
 }
 
 const WEBHOOK_URL = (process.env.BOOKING_WEBHOOK_URL || '').trim()
-const ADMIN_TOKEN = (process.env.BOOKING_ADMIN_TOKEN || '').trim()
-const OVERRIDE_ALLOWED = process.env.ALLOW_CLIENT_WEBHOOK_OVERRIDE === '1'
 const TRUST_PROXY = process.env.TRUST_PROXY === '1'
 
 const RATE_LIMIT = Number(process.env.BOOKING_RATE_LIMIT || 5)
@@ -115,28 +113,16 @@ function sendJson(res, statusCode, payload) {
   res.end(body)
 }
 
-/** True for loopback / link-local / private ranges — blocked when overrides are on. */
-function isPrivateHost(hostname) {
-  const host = hostname.replace(/^\[|\]$/g, '').toLowerCase()
-  if (host === 'localhost' || host.endsWith('.localhost')) return true
-  if (host === '::1' || host === '0.0.0.0') return true
-  if (/^169\.254\./.test(host)) return true // cloud metadata
-  if (/^10\./.test(host)) return true
-  if (/^192\.168\./.test(host)) return true
-  if (/^172\.(1[6-9]|2\d|3[01])\./.test(host)) return true
-  if (/^127\./.test(host)) return true
-  return false
-}
-
 function resolveTarget(requested) {
-  let raw = WEBHOOK_URL
-
-  if (!raw && OVERRIDE_ALLOWED && requested) {
-    raw = String(requested).trim()
-  }
+  // A URL saved in the site settings wins, so the endpoint can be changed
+  // without a rebuild or a server restart. The env var is the fallback.
+  const raw = String(requested || WEBHOOK_URL).trim()
 
   if (!raw) {
-    return { error: 'Booking endpoint is not configured on the server.' }
+    return {
+      error:
+        'Enter a webhook URL in the site settings, or set BOOKING_WEBHOOK_URL on the server.',
+    }
   }
 
   let url
@@ -148,12 +134,6 @@ function resolveTarget(requested) {
 
   if (url.protocol !== 'https:' && url.protocol !== 'http:') {
     return { error: 'Booking endpoint must use http or https.' }
-  }
-
-  // Only the override path is attacker-influenced, so that is where the
-  // SSRF guard belongs — a server-configured URL is trusted by definition.
-  if (!WEBHOOK_URL && OVERRIDE_ALLOWED && isPrivateHost(url.hostname)) {
-    return { error: 'Booking endpoint must be a public http(s) URL.' }
   }
 
   return { url }
@@ -196,10 +176,9 @@ export async function handleBookingRequest(req, res) {
 
   if (req.method === 'GET') {
     sendJson(res, 200, {
+      // Whether the server holds a fallback URL. A URL saved in the browser
+      // always works, so the panel always offers the field regardless.
       configured: Boolean(WEBHOOK_URL),
-      // Tells the settings panel whether a locally entered URL will be used.
-      overrideAllowed: OVERRIDE_ALLOWED,
-      // Deliberately no URL in the response — it stays server-side.
     })
     return true
   }

@@ -185,7 +185,7 @@
 
 .settings__error,
 .settings__saved,
-.settings__status {
+.settings__note {
   display: block;
   margin-top: var(--space-2);
   font-size: var(--text-label);
@@ -200,7 +200,7 @@
   color: var(--accent);
 }
 
-.settings__status {
+.settings__note {
   color: var(--text-muted);
 }
 

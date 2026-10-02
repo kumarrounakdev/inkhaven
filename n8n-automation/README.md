@@ -35,21 +35,20 @@ Production URL: `https://n8n.example.com/webhook/inkdesk-booking`
 
 ## Point Inkheaven at it
 
-Either:
-
-**Settings panel in the browser** (local only) — open the gear in the
-bottom-right, paste the webhook URL. This needs
-`ALLOW_CLIENT_WEBHOOK_OVERRIDE=1` in the server env, and it is rejected
-outright if the URL points at a private host (`localhost`, `127.0.0.1`,
-`192.168.x.x`, …) — `bookingProxy.mjs` blocks those because the URL is
-attacker-influenced on that path. So a **local** n8n will not work through the
-settings panel; use a tunnel or the env var below.
-
-**Server env** (how it should run in production) — in `inkheaven/.env`:
+Paste the webhook URL into the site itself: gear icon, bottom-right → paste the
+URL → Save. It is stored in that browser and sent with every booking, so a
+localhost n8n works:
 
 ```
-BOOKING_WEBHOOK_URL=https://n8n.example.com/webhook/inkdesk-booking
+http://localhost:5678/webhook/inkdesk-booking
 ```
+
+`BOOKING_WEBHOOK_URL` in `inkheaven/.env` is only a fallback for browsers with
+nothing saved, so you can leave `.env` alone entirely.
+
+Because the URL is client-supplied, anyone who can reach the site can point the
+proxy anywhere it likes. Fine for local or private-network use; put an
+authenticated hop in front before exposing it publicly.
 
 ## Point Inkdesk at it
 
