@@ -2,6 +2,7 @@ import { createServer } from 'node:http'
 import { readFile } from 'node:fs/promises'
 import { join, extname } from 'node:path'
 import { brotliCompressSync, gzipSync } from 'node:zlib'
+import { handleBookingRequest } from './bookingProxy.mjs'
 
 const ROOT = join(process.cwd(), 'dist')
 const PORT = Number(process.env.PORT || 4173)
@@ -46,6 +47,11 @@ function cacheHeader(pathname) {
 const server = createServer(async (req, res) => {
   try {
     for (const [key, value] of Object.entries(SECURITY_HEADERS)) res.setHeader(key, value)
+
+    // Booking webhook proxy. The destination URL is read from the server env,
+    // so the browser only ever talks to this origin.
+    if (await handleBookingRequest(req, res)) return
+
     const url = new URL(req.url, `http://${req.headers.host}`)
     let pathname = decodeURIComponent(url.pathname)
     if (pathname === '/') pathname = '/index.html'
@@ -84,10 +90,14 @@ const server = createServer(async (req, res) => {
 })
 
 server.listen(PORT, () => {
+  const webhookConfigured = Boolean(process.env.BOOKING_WEBHOOK_URL)
   console.log('\n=========================================================')
   console.log(`  LIGHTHOUSE AUDIT TARGET  →  http://localhost:${PORT}`)
   console.log('=========================================================')
   console.log(`Serving     →  ${ROOT}`)
   console.log('Compression →  brotli / gzip on-the-fly')
   console.log('Caching     →  /assets & /fonts immutable, HTML no-cache')
+  console.log(
+    `Booking API →  /api/bookings ${webhookConfigured ? '(configured)' : '(BOOKING_WEBHOOK_URL not set)'}`,
+  )
 })

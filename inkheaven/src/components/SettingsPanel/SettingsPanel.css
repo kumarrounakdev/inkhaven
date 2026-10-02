@@ -1,0 +1,285 @@
+.settings {
+  position: fixed;
+  right: clamp(1rem, 2.5vw, 1.75rem);
+  bottom: clamp(1rem, 2.5vw, 1.75rem);
+  z-index: var(--z-settings);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-3);
+}
+
+/* ------------------------------------------------------------
+   TRIGGER
+   ------------------------------------------------------------ */
+.settings__trigger {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: var(--border-thin);
+  border-radius: 50%;
+  background-color: rgba(16, 19, 24, 0.88);
+  backdrop-filter: blur(14px) saturate(1.05);
+  -webkit-backdrop-filter: blur(14px) saturate(1.05);
+  color: var(--text-secondary);
+  cursor: pointer;
+  box-shadow: var(--shadow-subtle);
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.settings__trigger:hover,
+.settings__trigger.is-open {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.settings__trigger:active {
+  transform: scale(0.94);
+}
+
+.settings__trigger:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.settings__gear {
+  width: 20px;
+  height: 20px;
+}
+
+/* Open state gets a slow spin so the control reads as "live". */
+.settings__trigger.is-open .settings__gear {
+  animation: settings-spin 0.6s var(--ease-out);
+}
+
+@keyframes settings-spin {
+  to {
+    transform: rotate(180deg);
+  }
+}
+
+/* ------------------------------------------------------------
+   PANEL
+   ------------------------------------------------------------ */
+.settings__panel {
+  width: min(340px, calc(100vw - 2rem));
+  padding: var(--space-6);
+  border: var(--border-thin);
+  border-radius: var(--radius-md);
+  background-color: var(--surface);
+  box-shadow: var(--shadow-subtle);
+  animation: settings-in var(--dur-base) var(--ease-out);
+}
+
+@keyframes settings-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.settings__panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-3);
+}
+
+.settings__eyebrow {
+  display: block;
+  margin-bottom: var(--space-2);
+}
+
+.settings__title {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  color: var(--text-primary);
+}
+
+.settings__close {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: var(--border-thin);
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+
+.settings__close:hover {
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+}
+
+.settings__close:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.settings__close-icon {
+  width: 13px;
+  height: 13px;
+}
+
+.settings__hint {
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--text-muted);
+  margin-bottom: var(--space-4);
+}
+
+/* ------------------------------------------------------------
+   FORM
+   ------------------------------------------------------------ */
+.settings__label {
+  display: block;
+  font-size: var(--text-label);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.settings__input {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: var(--border-thin);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  transition: border-color var(--dur-fast) var(--ease-out);
+}
+
+.settings__input::placeholder {
+  color: var(--text-muted);
+}
+
+.settings__input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.settings__input.is-error {
+  border-color: var(--accent-light);
+}
+
+.settings__error,
+.settings__saved,
+.settings__status {
+  display: block;
+  margin-top: var(--space-2);
+  font-size: var(--text-label);
+  line-height: 1.45;
+}
+
+.settings__error {
+  color: var(--accent-light);
+}
+
+.settings__saved {
+  color: var(--accent);
+}
+
+.settings__status {
+  color: var(--text-muted);
+}
+
+.settings__actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.settings__save,
+.settings__clear {
+  padding: 0.5rem 1rem;
+  border: var(--border-thin);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  cursor: pointer;
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+}
+
+.settings__save {
+  background-color: var(--text-primary);
+  color: var(--bg);
+}
+
+.settings__save:hover {
+  background-color: var(--accent-light);
+}
+
+.settings__clear {
+  background: none;
+  color: var(--text-muted);
+}
+
+.settings__clear:hover {
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+}
+
+.settings__save:focus-visible,
+.settings__clear:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------
+   MOBILE — clear the bottom nav bar
+   ------------------------------------------------------------ */
+@media (max-width: 767px) {
+  .settings {
+    bottom: calc(35px + 68px + 12px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (hover: none) and (max-width: 767px) {
+  .settings {
+    bottom: calc(35px + 68px + 12px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* ------------------------------------------------------------
+   REDUCED MOTION
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .settings__panel {
+    animation: none;
+  }
+
+  .settings__trigger.is-open .settings__gear {
+    animation: none;
+  }
+
+  .settings__trigger:active {
+    transform: none;
+  }
+}

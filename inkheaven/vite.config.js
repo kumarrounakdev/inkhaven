@@ -1,5 +1,18 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+import { bookingMiddleware } from './scripts/bookingProxy.mjs'
+
+// Serves /api/bookings in dev and preview so booking works everywhere the app
+// runs, not just under `npm run preview:prod`.
+const bookingApi = {
+  name: 'booking-api',
+  configureServer(server) {
+    server.middlewares.use(bookingMiddleware)
+  },
+  configurePreviewServer(server) {
+    server.middlewares.use(bookingMiddleware)
+  },
+}
 
 // Warning printed once the dev server starts: dev is NOT the Lighthouse target.
 const devAuditWarning = {
@@ -22,7 +35,7 @@ const CspHeader =
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), devAuditWarning],
+  plugins: [react(), bookingApi, devAuditWarning],
   server: {
     allowedHosts: true,
   },

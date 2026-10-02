@@ -87,6 +87,7 @@
 
   /* --- Z-index --- */
   --z-header: 100;
+  --z-settings: 110;
 
   /* --- Motion --- */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);

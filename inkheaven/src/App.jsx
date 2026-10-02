@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect } from 'react'
 import Navbar from './components/Navbar/Navbar'
 import Footer from './components/Footer/Footer'
+import SettingsPanel from './components/SettingsPanel/SettingsPanel'
 import Preloader from './components/Preloader/Preloader'
 import Hero from './sections/Hero/Hero'
 import FeaturedWork from './sections/FeaturedWork/FeaturedWork'
@@ -47,6 +48,7 @@ function App() {
         </Suspense>
       </main>
       <Footer />
+      <SettingsPanel />
     </>
   )
 }

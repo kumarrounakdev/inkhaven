@@ -3,6 +3,7 @@ import './BookingCTA.css'
 import Container from '../../components/Container/Container'
 import Button from '../../components/Button/Button'
 import useScrollReveal from '../../lib/useScrollReveal'
+import { getWebhookUrl } from '../../lib/webhookUrl'
 
 const styleOptions = ['Fine Line', 'Blackwork', 'Realism', 'Geometric', 'Abstract', 'Custom']
 const placementOptions = [
@@ -32,9 +33,10 @@ const budgetOptions = [
   'Not Sure',
 ]
 
-// n8n "Receive Webhook" URL. Set VITE_N8N_WEBHOOK_URL in .env — it is inlined at
-// build time, so the fallback only exists to keep `npm run dev` from hard-failing.
-const WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://webhook.example.com/inkheaven-booking'
+// Booking requests go to this same-origin endpoint. The server reads the n8n
+// webhook URL from its own environment and forwards, so no webhook URL is
+// ever shipped to the browser.
+const BOOKING_ENDPOINT = '/api/bookings'
 
 function Field({ id, label, required, error, children }) {
   return (
@@ -203,22 +205,34 @@ function BookingForm({ onSubmit }) {
     setSubmitting(true)
     setSubmitError('')
     try {
-      const res = await fetch(WEBHOOK_URL, {
+      const res = await fetch(BOOKING_ENDPOINT, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          // Only consulted when the server runs with
+          // ALLOW_CLIENT_WEBHOOK_OVERRIDE=1; ignored otherwise.
+          ...(getWebhookUrl() ? { 'x-webhook-url': getWebhookUrl() } : {}),
+        },
         body: JSON.stringify({
           ...values,
           dateIso,
           budget: values.budget || null,
-          submittedAt: new Date().toISOString(),
+          // Honeypot: empty for humans, filled by bots. The server drops those
+          // silently, so filtering still works for clients bypassing this form.
+          company: companyId,
           page: window.location.href,
         }),
       })
-      if (!res.ok) throw new Error(`Webhook responded ${res.status}`)
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error || `Request failed (${res.status})`)
+      }
       onSubmit()
-    } catch {
+    } catch (err) {
       setSubmitError(
-        'We could not send your request. Please try again, or email us directly.',
+        err.message && !err.message.startsWith('Failed to fetch')
+          ? err.message
+          : 'We could not send your request. Please try again, or email us directly.',
       )
     } finally {
       setSubmitting(false)

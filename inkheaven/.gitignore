@@ -26,7 +26,7 @@ dist-ssr
 # Local-only development notes
 commands.txt
 
-# Local env — holds the n8n webhook URL (never commit real values)
+# Local env — holds the server-side booking webhook URL
 .env
 .env.local
 !.env.example
