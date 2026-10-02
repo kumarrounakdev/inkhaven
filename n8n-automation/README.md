@@ -29,9 +29,37 @@ Inkdesk UI ─────────POST (CORS)──────────�
 ## Import
 
 n8n → **Workflows** → **Import from File** → `inkdesk-bookings.json` →
-**Import**. It arrives inactive — activate it once both apps are configured.
+**Import**.
 
-Production URL: `https://n8n.example.com/webhook/inkdesk-booking`
+## Publish it — this is the step that makes it "keep running"
+
+An imported workflow is a **draft**. Until you publish/activate it, the
+production URL `/webhook/inkdesk-booking` returns **404** and the only thing
+that answers is `/webhook-test/inkdesk-booking`, which lives only while the
+editor tab is open. That is the whole reason it looks like it "stops after one
+request": the test URL dies with the tab, and the real URL was never live.
+
+Open the workflow and click **Publish** (n8n 2.38+) or toggle **Active**
+(older versions). Confirm the production URL works:
+
+```bash
+curl -X POST http://localhost:5678/webhook/inkdesk-booking \
+  -H "Content-Type: text/plain;charset=utf-8" \
+  -d '{"action":"ping"}'
+# {"ok":true,"data":{"service":"inkdesk-api (n8n)","version":1}}
+```
+
+Two more things that look like the same bug:
+
+- **Editing a published workflow reopens a draft.** Until you publish the edit,
+  the live version keeps running the old code. Publish again after changing
+  anything.
+- **Static data is only written for live executions.** While you were testing
+  in the editor, bookings appeared to vanish between runs — n8n does not save
+  static data for manual/test executions. Once published, they persist.
+
+From the CLI, the equivalent is `n8n publish:workflow --id=<id>`, but note it
+warns that changes do not apply until n8n restarts.
 
 ## Point Inkheaven at it
 
@@ -64,11 +92,20 @@ stays in demo mode with sample data.
 Records live in the workflow's own static data (`$getWorkflowStaticData`), so
 there is no database and no credential to configure.
 
-The trade-off: static data is tied to the workflow record. It survives restarts,
-but **deactivating and reactivating the workflow, or importing a fresh copy over
-it, resets the bookings**. For anything you care about, move the `Route Request`
-store to a real backend — an n8n Data Table, Airtable/Supabase, or a Postgres
-node. The response shapes do not change, so nothing downstream needs editing.
+The trade-off: static data is tied to the workflow record. It survives restarts
+and repeated executions, but **deactivating and reactivating the workflow, or
+importing a fresh copy over it, resets the bookings**. For anything you care
+about, move the `Route Request` store to a real backend — an n8n Data Table,
+Airtable/Supabase, or a Postgres node. The response shapes do not change, so
+nothing downstream needs editing.
+
+If n8n runs in Docker without a volume on `~/.n8n`, the database itself is lost
+when the container is recreated. Bind-mount it before this matters:
+
+```yaml
+volumes:
+  - n8n_data:/home/node/.n8n
+```
 
 ## Actions
 
