@@ -99,6 +99,16 @@ export const api = {
   dashboard: () => call('dashboard', {}),
   meta: () => call('meta', {}),
   updateStatus: (id, status) => call('updateStatus', { id, status }),
+  /**
+   * Free slots the studio could offer, so the admin sees exactly what the
+   * customer will be emailed before anything is sent. `from` is the
+   * appointment's current date — slots are never proposed before it.
+   */
+  suggestSlots: (from) => call('suggestSlots', { params: { from } }).then((d) => d.items),
+  /**
+   * Offer alternative times rather than moving the booking. The customer picks
+   * one through the website form; the original slot stays put until they do.
+   */
   reschedule: (id, payload) => call('reschedule', { id, payload }),
   saveNotes: (id, notes) => call('saveNotes', { id, notes }),
   addManual: (payload) => call('addManual', { payload }),
