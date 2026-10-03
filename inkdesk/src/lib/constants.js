@@ -32,6 +32,15 @@ export const SCOPE_OPTIONS = [
   { value: 'all', label: 'All' },
 ];
 
+/**
+ * Studio opening hours. The n8n workflow holds the authoritative copy of these
+ * (see the STUDIO block in Route Request); they are repeated here so demo mode
+ * can suggest the same slots the real backend would.
+ */
+export const STUDIO_WEEKDAYS = [1, 2, 3, 4, 5, 6];
+export const STUDIO_HOURS = ['11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+export const STUDIO_OFFER_COUNT = 3;
+
 const STYLE_LABELS = Object.fromEntries(STYLE_OPTIONS.map((s) => [s.value, s.label]));
 const SIZE_LABELS = Object.fromEntries(SIZE_OPTIONS.map((s) => [s.value, s.label]));
 
