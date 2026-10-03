@@ -168,11 +168,20 @@ export default function Appointments() {
     }
   }
 
+  /**
+   * Emails are queued by the backend and delivered by n8n, so this app cannot
+   * know whether a send actually landed. It reports what was queued rather than
+   * claiming an email was sent.
+   */
+  function emailSuffix(queued) {
+    return queued ? ' — confirmation email queued' : ' — no email sent (no address on file)';
+  }
+
   async function run(action, successMsg) {
     setBusy(true);
     try {
-      await action();
-      setToast({ type: 'ok', msg: successMsg });
+      const result = await action();
+      setToast({ type: 'ok', msg: typeof successMsg === 'function' ? successMsg(result) : successMsg });
       setModal(null);
       closeDetail();
       setReloadKey((k) => k + 1);
@@ -486,10 +495,10 @@ export default function Appointments() {
                 run(
                   () => api.updateStatus(drawerAppt.id, status),
                   status === 'confirmed'
-                    ? 'Confirmed — confirmation email sent'
+                    ? (r) => `Confirmed${emailSuffix(r?.emailQueued)}`
                     : status === 'completed'
                       ? 'Marked completed'
-                      : 'Cancelled — client notified by email'
+                      : 'Cancelled'
                 )
               }
               onReschedule={() => setModal({ type: 'reschedule', appt: drawerAppt })}
@@ -517,10 +526,22 @@ export default function Appointments() {
           appt={modal.appt}
           busy={busy}
           onClose={() => setModal(null)}
-          onConfirm={({ date, time, message }) =>
+          onOffer={(options, note) =>
+            run(
+              () => api.reschedule(modal.appt.id, { options, note }),
+              (r) => {
+                const n = options.length;
+                const times = `${n} time${n === 1 ? '' : 's'}`;
+                return r?.emailQueued
+                  ? `Offered ${times} to ${modal.appt.name} — email queued, waiting on their reply`
+                  : `Saved ${times}, but nothing was emailed (no address on file)`;
+              }
+            )
+          }
+          onMove={(date, time, message) =>
             run(
               () => api.reschedule(modal.appt.id, { date, time, message }),
-              `Moved to ${fmtDate(date)} — client emailed`
+              `Moved to ${fmtDate(date)} — no email sent`
             )
           }
         />
