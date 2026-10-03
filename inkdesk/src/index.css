@@ -157,6 +157,17 @@ textarea {
   font-size: 12.5px;
   font-weight: 500;
 }
+.form__label {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+}
+.form__label-hint {
+  color: var(--text-muted);
+  font-weight: 500;
+}
 
 .field {
   display: flex;
