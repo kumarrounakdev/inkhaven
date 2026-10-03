@@ -7,9 +7,39 @@ export default function ApptDetail({ appt, busy, onStatus, onReschedule, onDelet
 
   const isActive = ACTIVE_STATUSES.includes(appt.status);
   const notesDirty = notes !== (appt.admin_notes || '');
+  // True while the studio has offered times and the client has not answered.
+  const awaiting = appt.awaiting_customer === true && appt.status !== 'cancelled';
+  const offers = awaiting && Array.isArray(appt.proposed_slots) ? appt.proposed_slots : [];
 
   return (
     <>
+      {awaiting && (
+        <section className="detail-section offer">
+          <h3 className="detail-section__title">
+            Waiting on the client
+            <span className="detail-section__hint">offered, not yet moved</span>
+          </h3>
+          <p className="offer__lead">
+            These times were emailed to {appt.name || 'the client'}. The booking still sits on{' '}
+            <strong>
+              {fmtDate(appt.date)} at {fmtTime(appt.time)}
+            </strong>{' '}
+            until they pick one through the website form — nothing is double-booked either way.
+          </p>
+          {offers.length > 0 && (
+            <ul className="offer__slots">
+              {offers.map((s) => (
+                <li key={`${s.date} ${s.time}`} className="offer__slot">
+                  <span>{fmtDate(s.date)}</span>
+                  <span>{fmtTime(s.time)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {appt.reschedule_note && <p className="quote">{appt.reschedule_note}</p>}
+        </section>
+      )}
+
       <section className="detail-section">
         <h3 className="detail-section__title">Appointment details</h3>
         <div className="detail-grid">

@@ -463,6 +463,47 @@
 .detail__value a {
   color: var(--accent-light);
 }
+/* ---------------- reschedule offer awaiting an answer ---------------- */
+.detail-section.offer {
+  border: 1px solid rgba(217, 185, 138, 0.35);
+  background: rgba(217, 185, 138, 0.07);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.detail-section.offer .detail-section__title {
+  color: var(--status-rescheduled);
+}
+.offer__lead {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+.offer__slots {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.offer__slot {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  padding: 7px 12px;
+  background: var(--field-bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.offer__slot span:last-child {
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
 .quote {
   background: var(--bg);
   border: 1px solid var(--border);
