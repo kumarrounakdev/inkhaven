@@ -1,5 +1,10 @@
-// Local-only override for the booking webhook, used solely when the server runs
-// with ALLOW_CLIENT_WEBHOOK_OVERRIDE=1 (a local development convenience).
+// The webhook URL the visitor saved in the site settings, sent to the booking
+// proxy as `x-webhook-url`.
+//
+// The proxy honours this header unconditionally - there is no flag gating it -
+// so it is a local/private-network convenience, not something to expose
+// publicly without an authenticated hop in front. BOOKING_WEBHOOK_URL is the
+// server-side fallback when nothing was saved.
 //
 // In a normal deployment the server holds BOOKING_WEBHOOK_URL and this module
 // is unused — nothing here reaches the network on its own.
