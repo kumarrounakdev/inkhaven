@@ -52,6 +52,83 @@
 .modal__close:hover {
   color: var(--text-primary);
 }
+
+/* ---------------- reschedule: pick the offered slots ---------------- */
+.slot-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+}
+.slot-picker__slot {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  text-align: left;
+  cursor: pointer;
+  background: var(--field-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-family: inherit;
+  transition: border-color 0.15s var(--ease-out), background 0.15s var(--ease-out),
+    color 0.15s var(--ease-out);
+}
+.slot-picker__slot:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+.slot-picker__slot:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(143, 168, 192, 0.15);
+}
+.slot-picker__slot.is-picked {
+  background: rgba(143, 168, 192, 0.15);
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+.slot-picker__date {
+  font-size: 12px;
+  font-weight: 600;
+}
+.slot-picker__time {
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+.slot-picker__slot.is-picked .slot-picker__time {
+  color: var(--accent-light);
+}
+
+/* The escape hatch: moving a slot the client already agreed to in person. */
+.reschedule-move {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.reschedule-move summary {
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  list-style: none;
+}
+.reschedule-move summary::-webkit-details-marker {
+  display: none;
+}
+.reschedule-move summary::before {
+  content: '▸ ';
+  color: var(--accent);
+}
+.reschedule-move[open] summary::before {
+  content: '▾ ';
+}
+.reschedule-move summary:hover {
+  color: var(--text-primary);
+}
+.reschedule-move .form {
+  margin-top: 14px;
+}
 @keyframes modal-in {
   from {
     opacity: 0;
