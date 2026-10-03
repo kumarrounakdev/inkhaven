@@ -55,6 +55,9 @@ const FIELDS = {
 
 const REQUIRED = ['name', 'email', 'phone', 'description']
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+// Ten national digits, trunk code optional so a hand-written or older payload
+// that omits "+91" is not rejected. The form cannot produce anything else.
+const PHONE_RE = /^(?:\+?91)?[0-9]{10}$/
 
 // Fixed per-IP token bucket. Unbounded maps are a memory leak, so old entries
 // are pruned whenever a new request is admitted.
@@ -155,6 +158,9 @@ function sanitize(input) {
   }
   if (out.email && !EMAIL_RE.test(out.email)) {
     errors.email = 'Enter a valid email address.'
+  }
+  if (out.phone && !PHONE_RE.test(out.phone)) {
+    errors.phone = 'Enter a 10-digit mobile number.'
   }
   if (out.date && !/^\d{2}-\d{2}-\d{4}$/.test(out.date)) {
     errors.date = 'Enter the date as dd-mm-yyyy.'
