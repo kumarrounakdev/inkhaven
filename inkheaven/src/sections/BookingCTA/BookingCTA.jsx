@@ -69,6 +69,31 @@ function formatDateDmy(raw) {
   return parts.join('-')
 }
 
+/**
+ * The studio books India only, so the trunk code is a constant rather than a
+ * picker: a static box cannot be edited at all, whereas a <select> or even a
+ * readonly input still can be. Kept outside the component so it is not rebuilt
+ * on every render.
+ */
+const PHONE_CODE = '91'
+const PHONE_DIGITS = 10
+
+/**
+ * Reduces whatever arrived to the bare national number, capped at 10 digits.
+ * Now that "+91" is on screen, pasting or autofilling a full number is the
+ * normal case rather than an edge one, so the trunk code has to come back off:
+ * otherwise `+91 98765 43210` would be stored as 9198765432 and silently reach
+ * the studio as a number nobody can call.
+ */
+function formatPhoneDigits(raw) {
+  let digits = String(raw).replace(/\D/g, '')
+  if (digits.startsWith('00')) digits = digits.slice(2) // international prefix
+  if (digits.length === PHONE_DIGITS + 2 && digits.startsWith(PHONE_CODE)) {
+    digits = digits.slice(PHONE_CODE.length)
+  }
+  return digits.slice(0, PHONE_DIGITS)
+}
+
 /** Validates dd-mm-yyyy and returns 'YYYY-MM-DD' for the API (or null when invalid). */
 function dateDmyToIso(dmy) {
   const m = String(dmy).match(/^(\d{2})-(\d{2})-(\d{4})$/)
@@ -164,7 +189,9 @@ function BookingForm({ onSubmit }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    const nextValue = name === 'date' ? formatDateDmy(value) : value
+    let nextValue = value
+    if (name === 'date') nextValue = formatDateDmy(value)
+    else if (name === 'phone') nextValue = formatPhoneDigits(value)
     setValues((prev) => ({
       ...prev,
       [name]: nextValue,
@@ -176,6 +203,23 @@ function BookingForm({ onSubmit }) {
     })
   }
 
+  // maxLength alone would clip a pasted "+919876543210" to its first ten
+  // characters ("+91987654") and leave 91 stranded at the front of the number,
+  // so the paste is taken over and filtered before it ever reaches the input.
+  const handlePhonePaste = (e) => {
+    e.preventDefault()
+    const input = e.currentTarget
+    const pasted = e.clipboardData.getData('text')
+    const start = input.selectionStart ?? values.phone.length
+    const end = input.selectionEnd ?? values.phone.length
+    const next = formatPhoneDigits(values.phone.slice(0, start) + pasted + values.phone.slice(end))
+    setValues((prev) => ({ ...prev, phone: next }))
+    // The DOM still holds the old string at this point, so a plain
+    // setSelectionRange would clamp against the wrong length and land the caret
+    // mid-number. Waiting for React to commit the value first avoids that.
+    requestAnimationFrame(() => input.setSelectionRange(next.length, next.length))
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (submitting) return
@@ -185,7 +229,9 @@ function BookingForm({ onSubmit }) {
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) {
       next.email = 'Enter a valid email address.'
     }
-    if (!values.phone.trim()) next.phone = 'Please enter your phone or WhatsApp number.'
+    const phoneDigits = formatPhoneDigits(values.phone)
+    if (!phoneDigits) next.phone = 'Please enter your phone or WhatsApp number.'
+    else if (phoneDigits.length !== PHONE_DIGITS) next.phone = 'Enter a 10-digit mobile number.'
     if (!values.style) next.style = 'Select a tattoo style.'
     if (!values.placement) next.placement = 'Select a placement.'
     if (!values.size) next.size = 'Select an approximate size.'
@@ -209,12 +255,16 @@ function BookingForm({ onSubmit }) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // Only consulted when the server runs with
-          // ALLOW_CLIENT_WEBHOOK_OVERRIDE=1; ignored otherwise.
+          // Honoured by the proxy whenever it is set; the server env var is
+          // only the fallback. See lib/webhookUrl.js.
           ...(getWebhookUrl() ? { 'x-webhook-url': getWebhookUrl() } : {}),
         },
         body: JSON.stringify({
           ...values,
+          // The input only ever holds the national number, so put the trunk
+          // code back on the way out: Inkdesk gets a number that can be dialled
+          // or WhatsApped without anyone having to remember it is India.
+          phone: values.phone ? `+${PHONE_CODE}${values.phone}` : values.phone,
           dateIso,
           budget: values.budget || null,
           // Honeypot: empty for humans, filled by bots. The server drops those
@@ -279,18 +329,24 @@ function BookingForm({ onSubmit }) {
         </div>
         <div className="booking__fields">
           <Field id="booking-phone" label="Phone / WhatsApp" required error={errors.phone}>
-            <input
-              className="booking__input"
-              id="booking-phone"
-              name="phone"
-              type="tel"
-              autoComplete="tel"
-              placeholder="Your number"
-              value={values.phone}
-              onChange={handleChange}
-              required
-              aria-describedby={errors.phone ? 'booking-phone-error' : undefined}
-            />
+            <div className="booking__phone">
+              <span className="booking__phone-code">+{PHONE_CODE}</span>
+              <input
+                className="booking__input booking__phone-input"
+                id="booking-phone"
+                name="phone"
+                type="tel"
+                inputMode="numeric"
+                autoComplete="tel-national"
+                maxLength={PHONE_DIGITS}
+                placeholder="9876543210"
+                value={values.phone}
+                onChange={handleChange}
+                onPaste={handlePhonePaste}
+                required
+                aria-describedby={errors.phone ? 'booking-phone-error' : undefined}
+              />
+            </div>
           </Field>
         </div>
       </fieldset>

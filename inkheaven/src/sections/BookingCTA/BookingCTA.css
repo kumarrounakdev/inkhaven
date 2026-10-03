@@ -203,6 +203,50 @@
   background: var(--surface, rgba(255, 255, 255, 0.04));
 }
 
+.booking__phone {
+  display: flex;
+  align-items: stretch;
+}
+
+/*
+ * Static text, not an input: there is nothing to focus, select or edit, so
+ * the trunk code cannot be changed. user-select stops it being copied out and
+ * pasted back over the top of it, which would only ever corrupt the number.
+ * Left un-hidden from assistive tech so the country is actually announced.
+ */
+.booking__phone-code {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 12px;
+  border: 1px solid var(--border);
+  border-right: 0;
+  border-radius: 10px 0 0 10px;
+  background: var(--surface, rgba(255, 255, 255, 0.03));
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  white-space: nowrap;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+.booking__phone-input {
+  border-radius: 0 10px 10px 0;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* One accent border across the joined pair rather than two mismatched halves. */
+.booking__phone:focus-within .booking__phone-code {
+  border-color: var(--accent);
+}
+
+.booking__field.is-error .booking__phone-code {
+  border-color: var(--booking-error);
+}
+
 .booking__date-wrap {
   position: relative;
 }
